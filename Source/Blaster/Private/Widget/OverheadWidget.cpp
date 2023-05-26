@@ -4,18 +4,18 @@
 #include "Widget/OverheadWidget.h"
 
 #include "Components/TextBlock.h"
+#include "GameFramework/PlayerState.h"
 
-void UOverheadWidget::SetDisplayText(FString TextToDisplay1, FString TextToDisplay2)
+void UOverheadWidget::SetDisplayText(FString LocalRoleString, FString RemoteRoleString)
 {
-	if (DisplayText1)
+	if (LocalRoleText)
 	{
-		DisplayText1->SetText(FText::FromString(TextToDisplay1));
-		DisplayText2->SetText(FText::FromString(TextToDisplay2));
+		LocalRoleText->SetText(FText::FromString(LocalRoleString));
 	}
 	
-	if (DisplayText2)
+	if (RemoteRoleText)
 	{
-		DisplayText2->SetText(FText::FromString(TextToDisplay2));
+		RemoteRoleText->SetText(FText::FromString(RemoteRoleString));
 	}
 }
 
@@ -60,6 +60,21 @@ void UOverheadWidget::ShowPlayerNetRole(APawn* InPawn)
 	FString LocalRoleString = FString::Printf(TEXT("Local Role: %s"), *Role1);
 	FString RemoteRoleString = FString::Printf(TEXT("Remote Role: %s"), *Role2);
 	SetDisplayText(LocalRoleString, RemoteRoleString);
+}
+
+void UOverheadWidget::ShowPlayerName(APlayerState* PlayerState)
+{
+	FString Name;
+	if (PlayerState)
+	{
+		Name = PlayerState->GetPlayerName();
+	}
+	FString PlayerNameString = FString::Printf(TEXT("Player Name: %s"), *Name);
+
+	if (PlayerNameText)
+	{
+		PlayerNameText->SetText(FText::FromString(PlayerNameString));
+	}
 }
 
 void UOverheadWidget::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld)

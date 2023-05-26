@@ -18,14 +18,20 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ShowPlayerNetRole(APawn* InPawn);
+	
+	UFUNCTION(BlueprintCallable)
+	void ShowPlayerName(APlayerState* PlayerState);
 
 protected:
 	virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* DisplayText1;
+	UTextBlock* LocalRoleText;
 	
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* DisplayText2;
+	UTextBlock* RemoteRoleText;
+	
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PlayerNameText;
 };

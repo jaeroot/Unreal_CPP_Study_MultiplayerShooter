@@ -6,11 +6,11 @@
 #include "Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "Weapon/Weapon.h"
 
-// Sets default values
 ABlasterCharacter::ABlasterCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -29,14 +29,24 @@ ABlasterCharacter::ABlasterCharacter()
 	OverheadWidget->SetupAttachment(RootComponent);
 }
 
-// Called when the game starts or when spawned
+void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly);
+}
+
 void ABlasterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called to bind functionality to input
+void ABlasterCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
 void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -79,9 +89,36 @@ void ABlasterCharacter::LookUp(float Value)
 	AddControllerPitchInput(Value);
 }
 
-// Called every frame
-void ABlasterCharacter::Tick(float DeltaTime)
+void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 {
-	Super::Tick(DeltaTime);
+	if (IsLocallyControlled())
+	{
+		if (OverlappingWeapon)
+		{
+			OverlappingWeapon->ShowPickupWidget(false);
+		}
+	}
+	
+	OverlappingWeapon = Weapon;
 
+	if (IsLocallyControlled())
+	{
+		if (OverlappingWeapon)
+		{
+			OverlappingWeapon->ShowPickupWidget(true);
+		}
+	}
+}
+
+void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
+{
+	if (OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickupWidget(true);
+	}
+
+	if (LastWeapon)
+	{
+		LastWeapon->ShowPickupWidget(false);
+	}
 }

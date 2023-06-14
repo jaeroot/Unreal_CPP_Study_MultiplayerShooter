@@ -12,17 +12,15 @@ class BLASTER_API ABlasterCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ABlasterCharacter();
-
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
+	void SetOverlappingWeapon(class AWeapon* Weapon);
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void MoveForward(float Value);
@@ -31,14 +29,21 @@ protected:
 	void LookUp(float Value);
 
 private:
+	UFUNCTION()
+	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
+
+private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
-		class USpringArmComponent* CameraBoom;
+	class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
-		class UCameraComponent* FollowCamera;
+	class UCameraComponent* FollowCamera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"));
 	class UWidgetComponent* OverheadWidget;
+
+	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon)
+	AWeapon* OverlappingWeapon;
 
 public:
 

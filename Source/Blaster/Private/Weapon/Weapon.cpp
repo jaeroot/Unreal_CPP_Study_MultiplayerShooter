@@ -3,6 +3,8 @@
 
 #include "Weapon/Weapon.h"
 
+#include "Animation/AnimationAsset.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Character/BlasterCharacter.h"
@@ -25,8 +27,7 @@ AWeapon::AWeapon()
 	
 	AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-
+	
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
 }
@@ -111,3 +112,10 @@ void AWeapon::ShowPickupWidget(bool bShowWidget)
 	}
 }
 
+void AWeapon::Fire()
+{
+	if (FireAnimation)
+	{
+		WeaponMesh->PlayAnimation(FireAnimation, false);
+	}
+}

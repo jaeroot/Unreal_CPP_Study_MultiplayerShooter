@@ -8,6 +8,7 @@
 
 class UWidgetComponent;
 class USphereComponent;
+class UAnimationAsset;
 
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
@@ -36,6 +37,8 @@ public:
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 
+	void Fire();
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -78,4 +81,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	UWidgetComponent* PickupWidget;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	UAnimationAsset* FireAnimation;
 };
